@@ -33,12 +33,12 @@ services:
 
   notifications_rabbitmq:
     image: rabbitmq:latest
-    hostname: my-rabbit
     ports:
       - "15672:15672" # Expose the management UI
       - "5672:5672"   # Expose the AMQP port
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - ./init/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./init/definitions.json:/etc/rabbitmq/definitions.json:ro
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
