@@ -1,0 +1,46 @@
+version: "3.8"
+
+#Docker Networks
+networks:
+  csproject:
+    driver: bridge
+    external: true
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
+  notifications-api-data:
+    name: notifications-api-data
+  rabbitmq_data:
+    driver: local
+
+  # Workflow
+services:
+  notifications_api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: notifications_api
+    ports:
+      - 8083:80
+    volumes:
+      - notifications-api-data:/var/www/html
+    depends_on:
+      - notifications_rabbitmq
+    networks:
+      - csproject
+
+  notifications_rabbitmq:
+    image: rabbitmq:latest
+    hostname: my-rabbit
+    ports:
+      - "15672:15672" # Expose the management UI
+      - "5672:5672"   # Expose the AMQP port
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - csproject
