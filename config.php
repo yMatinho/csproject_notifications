@@ -11,6 +11,11 @@ define("DB_PASSWORD", "secret");
 define("DB_PORT", 3307);
 define("DB_HOST", "notifications_database");
 
+define("RABBITMQ_HOST", "notifications_rabbitmq");
+define("RABBITMQ_PORT", 5672);
+define("RABBITMQ_USER", "user1");
+define("RABBITMQ_PASSWORD", "test12");
+
 spl_autoload_register(function($class) {
     $class = str_replace("\\","/", $class);
     if(!file_exists(MAIN_DIR.'src/' . $class . '.php'))
