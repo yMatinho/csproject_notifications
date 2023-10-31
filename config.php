@@ -16,6 +16,13 @@ define("RABBITMQ_PORT", 5672);
 define("RABBITMQ_USER", "user1");
 define("RABBITMQ_PASSWORD", "test12");
 
+define("EMAIL_HOST", "smtp.gmail.com");
+define("EMAIL_USER", "");
+define("EMAIL_PASSWORD", "");
+define("EMAIL_PORT", 587);
+define("EMAIL_FROM_EMAIL", "noreply@csproject.com");
+define("EMAIL_FROM_NAME", "CS Project");
+
 spl_autoload_register(function($class) {
     $class = str_replace("\\","/", $class);
     if(!file_exists(MAIN_DIR.'src/' . $class . '.php'))

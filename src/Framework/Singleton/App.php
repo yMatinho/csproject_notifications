@@ -2,6 +2,7 @@
 
 namespace Framework\Singleton;
 
+use Exception;
 use Framework\Command\ApiExecutionCommand;
 use Framework\Command\ExecutionCommand;
 use Framework\Factory\ViewFactory;
@@ -34,7 +35,7 @@ class App implements Singleton
         $this->command->execute();
     }
 
-    public function executeQueue(string $queue): void
+    public function  executeQueue(string $queue, string $jobClass): void
     {
         $connection = new AMQPStreamConnection(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PASSWORD);
 
@@ -42,7 +43,12 @@ class App implements Singleton
 
         $channel->queue_declare($queue, false, true, false, false);
 
-        $callback = function ($msg) {
+        $callback = function ($msg) use ($jobClass) {
+            try {
+                $job = new $jobClass(json_decode($msg->body));
+                $job->handle();
+            } catch(Exception $e) {}
+            
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
         };
 
